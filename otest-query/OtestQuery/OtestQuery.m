@@ -57,6 +57,10 @@
   for (id test in TestsFromSuite(testSuite)) {
     NSLog(@"Found test");
     NSLog(@"%@", test);
+    for (NSString *key in [test allKeys]) {
+      NSLog(@"%@", key);
+      NSLog(@"%@", [test objectForKey:key]);
+    }
     id identifier = [test valueForKey:@"_identifier"];
     NSAssert(identifier != nil, @"Can't get identifier for test: %@", test);
     [identifiers addObject:identifier];
