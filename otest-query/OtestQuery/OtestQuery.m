@@ -57,7 +57,7 @@
   for (id test in TestsFromSuite(testSuite)) {
     NSLog(@"Found test");
     NSLog(@"%@", test);
-    NSLog(@"%@", [test valueForKey:@"identifierString"]);
+    NSLog(@"%@", [test valueForKey:@"identifier"]);
     NSLog(@"%@", [test valueForKey:@"_identifierString"]);
     // for (NSString *key in [test allKeys]) {
     //   NSLog(@"%@", key);
