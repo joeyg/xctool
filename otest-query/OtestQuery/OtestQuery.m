@@ -141,7 +141,7 @@
 
   NSMutableArray *testNames = [NSMutableArray array];
 
-  if (NSClassFromString(@"XCTTestIdentifierSet")) { // Xcode 12.5 +
+  if (NSClassFromString(@"XCTTestIdentifier")) { // Xcode 12.5 +
     NSArray *identifiers = [self testIdentifiersFromSuite:allTestsSuite];
     for (XCTTestIdentifier *identifier in identifiers) {
       [testNames addObject:identifier.identifierString];
