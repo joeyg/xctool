@@ -71,7 +71,7 @@
     //   NSLog(@"%@", key);
     //   NSLog(@"%@", [test objectForKey:key]);
     // }
-    id identifier = [test valueForKey:@"_identifier"];
+    id identifier = [test valueForKey:@"_xctTestIdentifier"];
     NSAssert(identifier != nil, @"Can't get identifier for test: %@", test);
     [identifiers addObject:identifier];
   }
