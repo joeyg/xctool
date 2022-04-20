@@ -515,6 +515,46 @@ static void UpdateTestScope()
   __testScope = [testList retain];
 }
 
+# pragma mark - Hackery
+
+// HAX: on iOS 15, there's strangeness around load orders that need to be worked around. This provides an exit point for the offending method
+// by picking up that we're reentrant and just returning. This seems to solve our issues.
+
+static NSLock *lock;
+volatile static BOOL completedSetup = 0;
+static id UIAppConfigLoader_loadInitializationContextShim(id self, SEL sel) {
+  static dispatch_once_t onceToken;
+  SEL originalSelector = @selector(___UIApplicationConfigurationLoader__loadInitializationContext);
+  dispatch_once(&onceToken, ^{
+    lock = [[NSLock alloc] init];
+  });
+  if (!completedSetup) {
+    if ([lock tryLock]) {
+      id result = [self performSelector:originalSelector];
+      completedSetup = YES;
+      [lock unlock];
+      return result;
+    } else {
+      return nil;
+    }
+  }
+  return [self performSelector:originalSelector];
+}
+
+static void SwizzleiOS15BundleLoadingHack() {
+  if (![[NSProcessInfo processInfo] isOperatingSystemAtLeastVersion:(NSOperatingSystemVersion){15,0,0}]) {
+    return;
+  }
+
+  static dispatch_once_t onceToken;
+  dispatch_once(&onceToken, ^{
+    Class configurationLoader = NSClassFromString(@"_UIApplicationConfigurationLoader");
+    if (configurationLoader) {
+      XTSwizzleSelectorForFunction(configurationLoader, @selector(_loadInitializationContext), (IMP)UIAppConfigLoader_loadInitializationContextShim);
+    }
+  });
+}
+
 #pragma mark - Interposes
 /*
  *  We need to close opened fds so all pipe readers are notified and unblocked.
@@ -653,6 +693,7 @@ static void SwizzleSentTestMethodsIfAvailable()
 
 static void Swizzle()
 {
+  SwizzleiOS15BundleLoadingHack();
   SwizzleXCTestMethodsIfAvailable();
   SwizzleSentTestMethodsIfAvailable();
 }
