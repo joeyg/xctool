@@ -59,11 +59,13 @@
     NSLog(@"Found test");
     NSLog(@"%@", test);
     unsigned int count;
-    Ivar *ivars = class_copyIvarList([test class], &count);
+    objc_property_t *properties = class_copyPropertyList([test class], &count);
     for (unsigned int i = 0; i < count; i++) {
-      Ivar ivar = ivars[i];
-      const char *name = ivar_getName(ivar);
-      NSLog(@"%s", name);
+      // Ivar ivar = ivars[i];
+      const char *property = property_getName(properties[i]);
+      NSString *propertyString = [NSString stringWithCString:property encoding:[NSString defaultCStringEncoding]];
+      // const char *name = ivar_getName(ivar);
+      NSLog(@"%@", propertyString);
     }
     // for (NSString *key in [test allKeys]) {
     //   NSLog(@"%@", key);
