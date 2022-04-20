@@ -57,8 +57,6 @@
   for (id test in TestsFromSuite(testSuite)) {
     NSLog(@"Found test");
     NSLog(@"%@", test);
-    // NSLog(@"%@", [test valueForKey:@"identifier"]);
-    // NSLog(@"%@", [test valueForKey:@"_identifierString"]);
     unsigned int count;
     Ivar *ivars = class_copyIvarList([test class], &count);
     for (unsigned int i = 0; i < count; i++) {
