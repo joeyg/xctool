@@ -94,9 +94,9 @@
     if (list) {
       return list;
     } else {
-      *error = [NSString stringWithFormat:@"Error while parsing JSON: %@: %@.\nstdout:\n%@\nstderr:\n%@",
+      *error = [NSString stringWithFormat:@"Error while parsing JSON: %@: %@.\nstdout:\n%@\nstderr:\n%@\n%@\n",
                 [parseError localizedFailureReason],
-                jsonOutput, output[@"stdout"], output[@"stderr"]];
+                jsonOutput, output[@"stdout"], output[@"stderr"], outputPath];
       return nil;
     }
   }
