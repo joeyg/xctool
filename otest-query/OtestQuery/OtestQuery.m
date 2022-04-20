@@ -27,6 +27,7 @@
 #import "SenIsSuperclassOfClassPerformanceFix.h"
 #import "TestingFramework.h"
 #import "XCTest.h"
+#import <objc/runtime.h>
 
 @implementation OtestQuery
 
@@ -62,7 +63,7 @@
     for (unsigned int i = 0; i < count; i++) {
       Ivar ivar = ivars[i];
       const char *name = ivar_getName(ivar);
-      NSLog("%@", name);
+      NSLog(@"%s", name);
     }
     // for (NSString *key in [test allKeys]) {
     //   NSLog(@"%@", key);
