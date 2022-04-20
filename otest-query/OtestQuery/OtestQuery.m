@@ -56,9 +56,13 @@
   NSMutableArray *identifiers = [NSMutableArray array];
 
   for (id test in TestsFromSuite(testSuite)) {
-    NSLog(@"Found test");
-    NSLog(@"%@", test);
-    id identifier = [test valueForKey:@"_xctTestIdentifier"];
+    id identifier = nil;
+    if ([test respondsToSelector:@selector(_identifier)]) {
+      identifier = [test performSelector:@selector(_identifier)];
+    } else if ([test respondsToSelector:@selector(_xctTestIdentifier)] ){
+      identifier = [test performSelector:@selector(_xctTestIdentifier)];
+    }
+
     NSAssert(identifier != nil, @"Can't get identifier for test: %@", test);
     [identifiers addObject:identifier];
   }
