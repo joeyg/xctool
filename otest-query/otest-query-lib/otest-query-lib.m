@@ -22,5 +22,14 @@ __attribute__((constructor)) static void EntryPoint(void)
   NSCAssert(otestQueryBundlePath != nil,
             @"The environment variable 'OtestQueryBundlePath' is missing.");
 
-  [OtestQuery queryTestBundlePath:otestQueryBundlePath];
+
+  // HAX: on iOS 15, there's strangeness around load orders that need to be worked around. This
+  // lets the bundle loader logic work without deadlocking.
+  dispatch_block_t queryBlock =  ^{ [OtestQuery queryTestBundlePath:otestQueryBundlePath]; };
+  if ([[NSProcessInfo processInfo] isOperatingSystemAtLeastVersion:(NSOperatingSystemVersion){15,0,0}]) {
+    dispatch_async(dispatch_get_main_queue(), queryBlock);
+  }
+  else {
+    queryBlock();
+  }
 }
