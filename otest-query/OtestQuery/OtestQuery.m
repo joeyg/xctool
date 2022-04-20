@@ -57,8 +57,15 @@
   for (id test in TestsFromSuite(testSuite)) {
     NSLog(@"Found test");
     NSLog(@"%@", test);
-    NSLog(@"%@", [test valueForKey:@"identifier"]);
-    NSLog(@"%@", [test valueForKey:@"_identifierString"]);
+    // NSLog(@"%@", [test valueForKey:@"identifier"]);
+    // NSLog(@"%@", [test valueForKey:@"_identifierString"]);
+    unsigned int count;
+    Ivar *ivars = class_copyIvarList([test class], &count);
+    for (unsigned int i = 0; i < count; i++) {
+      Ivar ivar = ivars[i];
+      const char *name = ivar_getName(ivar);
+      NSLog("%@", name);
+    }
     // for (NSString *key in [test allKeys]) {
     //   NSLog(@"%@", key);
     //   NSLog(@"%@", [test objectForKey:key]);
